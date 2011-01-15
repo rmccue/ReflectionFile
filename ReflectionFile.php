@@ -132,6 +132,3 @@ class ReflectionFile implements Reflector {
 		return $this->docComment;
 	}
 }
-
-$a = new ReflectionFile(__FILE__);
-var_dump($a->getClasses());
