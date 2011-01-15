@@ -22,6 +22,7 @@ class ReflectionFile implements Reflector {
 	protected function reflect() {
 		$contents = file_get_contents($this->filename);
 		$tokens = token_get_all($contents);
+		$next = false;
 		
 		foreach ($tokens as $token) {
 			if (!is_array($token)) {
