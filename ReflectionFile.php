@@ -24,6 +24,10 @@ class ReflectionFile implements Reflector {
 		$contents = file_get_contents($this->filename);
 		$tokens = token_get_all($contents);
 		$next = false;
+		$depth = 0;
+		$location = 'global';
+		$entered_class_at = 0;
+		$entered_func_at = 0;
 
 		// Step 1: Get the file DocBlock
 		foreach ($tokens as $token) {
@@ -52,6 +56,21 @@ class ReflectionFile implements Reflector {
 				list($type, $value, $line) = $token;
 			}
 			else {
+				if ($token === '{') {
+					$depth++;
+				}
+				elseif ($token === '}') {
+					$depth--;
+					if ($depth === $entered_class_at) {
+						//We're now out of the class definition
+						$entered_class_at = 0;
+						$location = 'global';
+					}
+					elseif ($depth === $entered_func_at) {
+						$entered_func_at = 0;
+						$location = 'global';
+					}
+				}
 				continue;
 			}
 			switch ($type) {
@@ -59,17 +78,23 @@ class ReflectionFile implements Reflector {
 					if ($next === 'class') {
 						$this->classes[] = $value;
 						$next = false;
+						$entered_class_at = $depth;
+						$location = 'class';
 					}
 					elseif ($next === 'function') {
 						$this->functions[] = $value;
 						$next = false;
+						$entered_func_at = $depth;
+						$location = 'function';
 					}
 					break;
 				case T_CLASS:
 					$next = 'class';
 					break;
 				case T_FUNCTION:
-					$next = 'function';
+					if ($location === 'global') {
+						$next = 'function';
+					}
 					break;
 			}
 		}
