@@ -89,6 +89,10 @@ class ReflectionFile implements Reflector {
 	public function getClasses() {
 		return $this->classes;
 	}
+	
+	public function getDocComment() {
+		return $this->docComment;
+	}
 }
 
 $a = new ReflectionFile(__FILE__);
