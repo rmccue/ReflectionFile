@@ -19,11 +19,13 @@ class ReflectionFile implements Reflector {
 		$this->filename = $filename;
 		$this->reflect();
 	}
+
 	protected function reflect() {
 		$contents = file_get_contents($this->filename);
 		$tokens = token_get_all($contents);
 		$next = false;
-		
+
+		// Step 1: Get the file DocBlock
 		foreach ($tokens as $token) {
 			if (!is_array($token)) {
 				$this->docComment = '';
@@ -43,7 +45,7 @@ class ReflectionFile implements Reflector {
 					break;
 			}
 		}
-		
+
 		foreach ($tokens as $token) {
 			if (is_array($token)) {
 				list($type, $value, $line) = $token;
@@ -71,11 +73,11 @@ class ReflectionFile implements Reflector {
 			}
 		}
 	}
-	
+
 	public function __toString() {
 		return '';
 	}
-	
+
 	/**
 	 * Export (something)
 	 *
@@ -89,7 +91,7 @@ class ReflectionFile implements Reflector {
 	public function getClasses() {
 		return $this->classes;
 	}
-	
+
 	public function getDocComment() {
 		return $this->docComment;
 	}
