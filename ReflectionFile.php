@@ -46,6 +46,7 @@ class ReflectionFile implements Reflector {
 			}
 		}
 
+		// Step 2: Use the tokens to grab the classes, etc.
 		foreach ($tokens as $token) {
 			if (is_array($token)) {
 				list($type, $value, $line) = $token;
@@ -88,10 +89,20 @@ class ReflectionFile implements Reflector {
 		return null;
 	}
 
+	/**
+	 * Retrieve the defined classes for a file
+	 *
+	 * @return array Class names
+	 */
 	public function getClasses() {
 		return $this->classes;
 	}
 
+	/**
+	 * Retrieve the file docblock
+	 *
+	 * @return string
+	 */
 	public function getDocComment() {
 		return $this->docComment;
 	}
